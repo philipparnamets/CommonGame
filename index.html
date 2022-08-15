@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <script src="jspsych/jspsych.js"></script>
+    <script src="jspsych/plugin-html-keyboard-response.js"></script>
+    <script src="jspsych/plugin-canvas-keyboard-response.js"></script>
+    <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych();
+    var timeline = [];
+
+    // control parameters
+    n_trials = 5; 
+    n_players_shown = 6;
+
+    // generate initials to show to folks
+    function generateRandomLetter() {
+          const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+          
+          return alphabet[Math.floor(Math.random() * alphabet.length)]
+        }
+
+    function generatePlayers(n_trials){
+        var all_players = [];
+
+        while (all_players.length < n_trials * n_players_shown){
+            var letter1 = generateRandomLetter();
+            var letter2 = generateRandomLetter();
+
+            all_players.push( letter1+letter2);
+            all_players = [... new Set(all_players)];
+        }
+
+        return all_players;
+    }   
+    
+    var players = generatePlayers(n_trials);
+    var initials = [];  // needed for display
+
+    // generate behaviors to show to folks
+    /*
+    strategy here is to generate lists of A and B behaviors - these determine what will be selected for participants
+    for each set of A and B behaviors, numbers between 1 and 6, balanced - these determine how many of the selected behavior are also shown on that trial
+    */
+   
+
+    // functions draw players and setup
+    var coordinates = {
+        x: [20, 20, 220, 220, 420, 420],
+        y: [20, 220],
+        w: 100,
+        h: 100
+    }
+
+    var selected_behavior = []; //init
+
+    function drawChoices(c, initials){
+        // draws the box, initials and behaviors
+        var ctx = c.getContext('2d');
+
+        ctx.lineWidth = 3;
+        ctx.font = "20px sans-serif";
+        for (let i = 0; i <n_players_shown; i++){
+            ctx.strokeRect(coordinates.x[i], coordinates.y[i % 2], coordinates.w, coordinates.h);
+            ctx.fillText(initials[i], coordinates.x[i]+25, coordinates.y[i % 2]+ 50);            
+        }
+    }
+
+    function drawChoiceRect(c, i){
+        // draws rect around selected behavior [i]
+        var ctx = c.getContext('2d');
+
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = "#DD0000";
+        ctx.strokeRect(coordinates.x[i]-7, coordinates.y[i % 2]- 7, coordinates.w + 13 , coordinates.h + 13)
+    }
+
+    // main trial loop
+    const trial_main_fix = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: '<p style="font-size: 48px;">+</p>',
+        choices: "NO_KEYS",
+        trial_duration: 1000,
+    };
+
+    const trial_main_display = {
+        type: jsPsychCanvasKeyboardResponse,
+        canvas_size: [700, 700],
+        stimulus: function(c){
+            initials = players.splice(-6, n_players_shown);
+            
+            drawChoices(c, initials);
+        },
+        choices: "NO_KEYS",
+        trial_duration: 2000
+    };
+
+    const trial_main_choose = {
+        type: jsPsychCanvasKeyboardResponse,
+        canvas_size: [700, 700],
+        stimulus: function(c){
+            selected_behavior = jsPsych.randomization.randomInt(0,5);  // which behaviour to highlight
+
+            drawChoices(c, initials);
+            drawChoiceRect(c, selected_behavior);
+        },
+        choices: ['f', 'j'],
+        prompt: "<p> Press f or j </p> "
+    };
+    
+    var procedure_main = {
+        timeline: [trial_main_fix, trial_main_display, trial_main_choose],
+        repetitions: n_trials
+    };
+    timeline.push(procedure_main);
+
+    jsPsych.run(timeline);
+  </script>
+</html>
