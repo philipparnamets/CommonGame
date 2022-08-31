@@ -13,7 +13,7 @@
     var timeline = [];
 
     // control parameters
-    n_trials = 5; 
+    n_trials = 12; 
     n_players_shown = 6;
 
     // generate initials to show to folks
@@ -44,8 +44,12 @@
     /*
     strategy here is to generate lists of A and B behaviors - these determine what will be selected for participants
     for each set of A and B behaviors, numbers between 1 and 6, balanced - these determine how many of the selected behavior are also shown on that trial
+    then use function to shuffle both in exactly same way
     */
-   
+    var trial_behavior = Array(n_trials/2).fill(["A", "B"]).flat() 
+    var trial_n_behavior = Array(Math.ceil(n_trials/n_players_shown)).fill[1,2,3,4,5,6].flat()
+
+
 
     // functions draw players and setup
     var coordinates = {
