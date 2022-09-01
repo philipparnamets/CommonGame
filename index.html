@@ -46,22 +46,60 @@
     for each set of A and B behaviors, numbers between 1 and 6, balanced - these determine how many of the selected behavior are also shown on that trial
     then use function to shuffle both in exactly same way
     */
-    var trial_behavior = Array(n_trials/2).fill(["A", "B"]).flat() 
-    var trial_n_behavior = Array(Math.ceil(n_trials/n_players_shown)).fill[1,2,3,4,5,6].flat()
+    var trial_behavior = Array(n_trials/2).fill(["B"]).flat().concat(Array(n_trials/2).fill(["A"]).flat()); 
+    var trial_n_behavior = Array(Math.ceil(n_trials/n_players_shown)).fill([1,2,3,4,5,6]).flat();
 
+    //function to shuffle the image arrays in a way so blue and yellow arrays are shuffled the same//
+        //the following block of 23 lines of code is copy and pasted from https://stackoverflow.com/questions/18194745/shuffle-multiple-javascript-arrays-in-the-same-way ! //
+        function shuffle(array, array2) {
+            var counter = array.length, temp, temp2, index;
 
+             // "While there are elements in the array"
+             while (counter > 0) {
+                // "Pick a random index"
+                //index = Math.floor(Math.random() * counter);
+                index = Math.floor(Math.random() * counter);
+
+                // "Decrease counter by 1"
+                counter--;
+
+                // "And swap the last element with it"
+                temp = array[counter];
+                temp2 = array2[counter];
+
+                array[counter] = array[index];
+                array2[counter] = array2[index];
+
+                array[index] = temp;
+                array2[index] = temp2;
+            }
+            return array;
+        }   
+
+    shuffle(trial_behavior, trial_n_behavior);
+
+    function getAllIndexes(arr, val) {
+        var indexes = [], i = -1;
+        while ((i = arr.indexOf(val, i+1)) != -1){
+            indexes.push(i);
+        }
+        return indexes;
+    }
 
     // functions draw players and setup
     var coordinates = {
         x: [20, 20, 220, 220, 420, 420],
-        y: [20, 220],
+        y: [20, 260],
         w: 100,
         h: 100
     }
 
-    var selected_behavior = []; //init
+    var selected_behavior; //init
+    var selected_behavior_pos;
+    var n_selected;
+    var behavior_list = [];
 
-    function drawChoices(c, initials){
+    function drawChoices(c, initials, behavior_list){
         // draws the box, initials and behaviors
         var ctx = c.getContext('2d');
 
@@ -70,6 +108,7 @@
         for (let i = 0; i <n_players_shown; i++){
             ctx.strokeRect(coordinates.x[i], coordinates.y[i % 2], coordinates.w, coordinates.h);
             ctx.fillText(initials[i], coordinates.x[i]+25, coordinates.y[i % 2]+ 50);            
+            ctx.fillText(behavior_list[i], coordinates.x[i]+50, coordinates.y[i % 2] + coordinates.h + 40); 
         }
     }
 
@@ -94,9 +133,22 @@
         type: jsPsychCanvasKeyboardResponse,
         canvas_size: [700, 700],
         stimulus: function(c){
-            initials = players.splice(-6, n_players_shown);
+            initials = players.splice(-n_players_shown, n_players_shown);
             
-            drawChoices(c, initials);
+            // generate behaviors to view
+            selected_behavior = trial_behavior.pop();
+            n_selected = trial_n_behavior.pop();
+
+            if (selected_behavior == "A"){
+                //behavior_list = ["A" * ]
+                behavior_list = Array(n_selected).fill(["A"]).flat().concat(Array(n_players_shown - n_selected).fill(["B"]).flat()); 
+            } else {
+                behavior_list = Array(n_selected).fill(["B"]).flat().concat(Array(n_players_shown - n_selected).fill(["A"]).flat()); 
+            }
+
+            jsPsych.randomization.repeat(behavior_list, 1)
+
+            drawChoices(c, initials, behavior_list);
         },
         choices: "NO_KEYS",
         trial_duration: 2000
@@ -106,9 +158,12 @@
         type: jsPsychCanvasKeyboardResponse,
         canvas_size: [700, 700],
         stimulus: function(c){
+            var indexes = getAllIndexes(behavior_list, selected_behavior);
+            console.log(indexes)
+
             selected_behavior = jsPsych.randomization.randomInt(0,5);  // which behaviour to highlight
 
-            drawChoices(c, initials);
+            drawChoices(c, initials, behavior_list);
             drawChoiceRect(c, selected_behavior);
         },
         choices: ['f', 'j'],
