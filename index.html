@@ -5,11 +5,17 @@
     <script src="jspsych/jspsych.js"></script>
     <script src="jspsych/plugin-html-keyboard-response.js"></script>
     <script src="jspsych/plugin-canvas-keyboard-response.js"></script>
+    <script src="jspsych/plugin-canvas-slider-response.js"></script>
     <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
   </head>
   <body></body>
   <script>
-    const jsPsych = initJsPsych();
+    const jsPsych = initJsPsych({
+        on_finish: function(){
+            jsPsych.data.displayData();
+        },
+        show_progress_bar: true
+    });
     var timeline = [];
 
     // control parameters
@@ -78,14 +84,6 @@
 
     shuffle(trial_behavior, trial_n_behavior);
 
-    function getAllIndexes(arr, val) {
-        var indexes = [], i = -1;
-        while ((i = arr.indexOf(val, i+1)) != -1){
-            indexes.push(i);
-        }
-        return indexes;
-    }
-
     // functions draw players and setup
     var coordinates = {
         x: [20, 20, 220, 220, 420, 420],
@@ -121,7 +119,20 @@
         ctx.strokeRect(coordinates.x[i]-7, coordinates.y[i % 2]- 7, coordinates.w + 13 , coordinates.h + 13)
     }
 
-    // main trial loop
+
+    // INSTRUCTIONS
+
+    const instructions_initial = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: "<div style = 'width: 700px;'> <p> In this study, your task is to evaluate the behaviors of other individuals. </p> <p> These behaviors come from an earlier experiment in which 240 participants were randomly divided into 40 groups of 6 participants in each group. After that, each group took part in one anonymous interaction. In the beginning, each participant was given two dollars.</p> <p> In each interaction, each of the four participants had to make a choice between two options: A and B, which provided them a different economical reward. The outcome of each individual depended on their own decision and the decision of other members of the group.</p> </div>",
+        prompt: "Press spacebar to continue",
+        choices: " "
+    };
+
+    timeline.push(instructions_initial);
+    
+    
+    // MAIN TRIAL LOOP
     const trial_main_fix = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: '<p style="font-size: 48px;">+</p>',
@@ -131,7 +142,7 @@
 
     const trial_main_display = {
         type: jsPsychCanvasKeyboardResponse,
-        canvas_size: [700, 700],
+        canvas_size: [400, 550],
         stimulus: function(c){
             initials = players.splice(-n_players_shown, n_players_shown);
             
@@ -151,23 +162,38 @@
             drawChoices(c, initials, behavior_list);
         },
         choices: "NO_KEYS",
+        propmt: "",
         trial_duration: 2000
     };
 
+    // define helper function
+    // gets all indexes of some value in array
+    function getAllIndexes(arr, val) {
+        var indexes = [], i;
+        for(i = 0; i < arr.length; i++)
+            if (arr[i] === val)
+                indexes.push(i);
+        return indexes;
+    }
+
     const trial_main_choose = {
-        type: jsPsychCanvasKeyboardResponse,
-        canvas_size: [700, 700],
+        type: jsPsychCanvasSliderResponse,
+        canvas_size: [400, 550],
         stimulus: function(c){
             var indexes = getAllIndexes(behavior_list, selected_behavior);
-            console.log(indexes)
-
-            selected_behavior = jsPsych.randomization.randomInt(0,5);  // which behaviour to highlight
+            indexes = jsPsych.randomization.repeat(indexes, 1);
+            selected_behavior_pos = indexes.pop()  // which behaviour to highlight
 
             drawChoices(c, initials, behavior_list);
-            drawChoiceRect(c, selected_behavior);
+            drawChoiceRect(c, selected_behavior_pos);
         },
-        choices: ['f', 'j'],
-        prompt: "<p> Press f or j </p> "
+        min: 1,
+        max: 9,
+        step: 1,
+        require_movement: true,
+        slider_start: 5,
+        labels: ['Morally<br>wrong','Morally<br>right'],
+        prompt: "<p> How moral do you think the selected behavior is? </p>"
     };
     
     var procedure_main = {
