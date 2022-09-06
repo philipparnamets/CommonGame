@@ -21,6 +21,11 @@
     // control parameters
     n_trials = 12; 
     n_players_shown = 6;
+    durations = {
+        "ITI": 1000,
+        "display_agents": 2000,
+        "display_select": 2000
+    }
 
     // generate initials to show to folks
     function generateRandomLetter() {
@@ -105,7 +110,7 @@
         ctx.font = "20px sans-serif";
         for (let i = 0; i <n_players_shown; i++){
             ctx.strokeRect(coordinates.x[i], coordinates.y[i % 2], coordinates.w, coordinates.h);
-            ctx.fillText(initials[i], coordinates.x[i]+25, coordinates.y[i % 2]+ 50);            
+            ctx.fillText(initials[i], coordinates.x[i]+35, coordinates.y[i % 2]+ 50);            
             ctx.fillText(behavior_list[i], coordinates.x[i]+50, coordinates.y[i % 2] + coordinates.h + 40); 
         }
     }
@@ -137,12 +142,12 @@
         type: jsPsychHtmlKeyboardResponse,
         stimulus: '<p style="font-size: 48px;">+</p>',
         choices: "NO_KEYS",
-        trial_duration: 1000,
+        trial_duration: durations.ITI,
     };
 
     const trial_main_display = {
         type: jsPsychCanvasKeyboardResponse,
-        canvas_size: [400, 550],
+        canvas_size: [440, 550],
         stimulus: function(c){
             initials = players.splice(-n_players_shown, n_players_shown);
             
@@ -163,7 +168,7 @@
         },
         choices: "NO_KEYS",
         propmt: "",
-        trial_duration: 2000
+        trial_duration: durations.display_agents
     };
 
     // define helper function
@@ -176,14 +181,26 @@
         return indexes;
     }
 
-    const trial_main_choose = {
-        type: jsPsychCanvasSliderResponse,
-        canvas_size: [400, 550],
+    const trial_main_select = {
+        type: jsPsychCanvasKeyboardResponse,
+        canvas_size: [440, 550],
         stimulus: function(c){
             var indexes = getAllIndexes(behavior_list, selected_behavior);
             indexes = jsPsych.randomization.repeat(indexes, 1);
             selected_behavior_pos = indexes.pop()  // which behaviour to highlight
 
+            drawChoices(c, initials, behavior_list);
+            drawChoiceRect(c, selected_behavior_pos);
+        },
+        choices: "NO_KEYS",
+        propmt: "",
+        trial_duration: durations.display_select
+    };
+
+    const trial_main_choose = {
+        type: jsPsychCanvasSliderResponse,
+        canvas_size: [440, 550],
+        stimulus: function(c){
             drawChoices(c, initials, behavior_list);
             drawChoiceRect(c, selected_behavior_pos);
         },
@@ -193,11 +210,16 @@
         require_movement: true,
         slider_start: 5,
         labels: ['Morally<br>wrong','Morally<br>right'],
-        prompt: "<p> How moral do you think the selected behavior is? </p>"
+        prompt: "<p> How moral do you think the selected behavior is? </p>",
+        on_finish: function(data){
+            data.behaviors_shown = behavior_list,
+            data.selected_behavior = selected_behavior,
+            data.selected_behavior_pos = selected_behavior_pos
+        }
     };
     
     var procedure_main = {
-        timeline: [trial_main_fix, trial_main_display, trial_main_choose],
+        timeline: [trial_main_fix, trial_main_display, trial_main_select, trial_main_choose],
         repetitions: n_trials
     };
     timeline.push(procedure_main);
