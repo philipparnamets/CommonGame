@@ -137,7 +137,7 @@
         for (let i = 0; i <n_players_shown; i++){
             ctx.strokeRect(coordinates.x[i], coordinates.y[i % 2], coordinates.w, coordinates.h);
             ctx.fillText(initials[i], coordinates.x[i]+35, coordinates.y[i % 2]+ 50);            
-            ctx.fillText(behavior_list[i], coordinates.x[i]+50, coordinates.y[i % 2] + coordinates.h + 40); 
+            ctx.fillText(behavior_list[i], coordinates.x[i]+20, coordinates.y[i % 2] + coordinates.h + 40); 
         }
     }
 
@@ -148,9 +148,7 @@
         ctx.lineWidth = 3;
         ctx.font = "20px sans-serif";
         for (let i = 0; i <n_players_shown; i++){
-            ctx.strokeRect(coordinates.x[i], coordinates.y[i % 2], coordinates.w, coordinates.h);
-            ctx.fillText(initials[i], coordinates.x[i]+35, coordinates.y[i % 2]+ 50);            
-            ctx.fillText(behavior_list[i], coordinates.x[i]+50, coordinates.y[i % 2] + coordinates.h + 40); 
+            ctx.fillText("$" + payout_list[i], coordinates.x[i]+40, coordinates.y[i % 2] + coordinates.h + 40);            
         }
     }
 
@@ -163,9 +161,7 @@
         ctx.strokeRect(coordinates.x[i]-7, coordinates.y[i % 2]- 7, coordinates.w + 13 , coordinates.h + 13)
     }
 
-
     // INSTRUCTIONS
-
     const instructions_initial = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: "<div style = 'width: 700px;'> <p> In this study, your task is to evaluate the behaviors of other individuals. </p> <p> These behaviors come from an earlier experiment in which 240 participants were randomly divided into 40 groups of 6 participants in each group. After that, each group took part in one anonymous interaction. In the beginning, each participant was given two dollars.</p> <p> In each interaction, each of the four participants had to make a choice between two options: A and B, which provided them a different economical reward. The outcome of each individual depended on their own decision and the decision of other members of the group.</p> </div>",
@@ -209,9 +205,9 @@
                 // reverse payouts to above
                 payout_list = Array(n_selected).fill([ this_payout[1] ]).flat().concat(Array(n_players_shown - n_selected).fill([ this_payout[0] ]).flat()); 
             }
-
+            
             shuffle(behavior_list, payout_list, 0);
-
+            
             drawChoices(c, initials, behavior_list);
         },
         choices: "NO_KEYS",
@@ -223,9 +219,8 @@
         type: jsPsychCanvasKeyboardResponse,
         canvas_size: [440, 550],
         stimulus: function(c){
-
             drawChoices(c, initials, behavior_list);
-            drawPayoff(c, payout_list);            
+            drawPayout(c, payout_list);            
         },
         choices: "NO_KEYS",
         prompt: "",
@@ -251,6 +246,7 @@
             selected_behavior_pos = indexes.pop()  // which behaviour to highlight
 
             drawChoices(c, initials, behavior_list);
+            drawPayout(c, payout_list);
             drawChoiceRect(c, selected_behavior_pos);
         },
         choices: "NO_KEYS",
@@ -258,13 +254,12 @@
         trial_duration: durations.display_select
     };
 
-
-
     const trial_main_choose = {
         type: jsPsychCanvasSliderResponse,
         canvas_size: [440, 550],
         stimulus: function(c){
             drawChoices(c, initials, behavior_list);
+            drawPayout(c, payout_list);
             drawChoiceRect(c, selected_behavior_pos);
         },
         min: 1,
@@ -282,7 +277,7 @@
     };
     
     var procedure_main = {
-        timeline: [trial_main_fix, trial_main_display,  trial_main_payout, trial_main_select, trial_main_choose],
+        timeline: [trial_main_fix, trial_main_display, trial_main_payout, trial_main_select, trial_main_choose],
         repetitions: n_trials
     };
     timeline.push(procedure_main);
