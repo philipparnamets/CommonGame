@@ -56,10 +56,13 @@
     /*
     strategy here is to generate lists of A and B behaviors - these determine what will be selected for participants
     for each set of A and B behaviors, numbers between 1 and 6, balanced - these determine how many of the selected behavior are also shown on that trial
-    then use function to shuffle both in exactly same way
+    number of selected behavior need to be shuffled independently among A and B to ensure payouts are not systematically biased
+    add payouts, evenly distributed among A and B behavior. 
+    then use function to shuffle all three in exactly same way - to generate unique trial sequences
     */
     var trial_behavior = Array(n_trials/2).fill(["B"]).flat().concat(Array(n_trials/2).fill(["A"]).flat()); 
-    var trial_n_behavior = Array(Math.ceil(n_trials/n_players_shown)).fill([1,2,3,4,5,6]).flat();
+    var temp_n = Array(Math.ceil(n_trials/n_players_shown/2)).fill([1,2,3,4,5,6]).flat()
+    var trial_n_behavior = jsPsych.randomization.repeat(temp_n, 1).concat(jsPsych.randomization.repeat(temp_n, 1));
     var trial_payout = Array(Math.ceil(n_trials/2)).fill(["small", "large"]).flat();
     
     //function to shuffle the image arrays in a way so multiple arrays shuffled same//
