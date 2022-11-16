@@ -27,6 +27,7 @@
         "display_payout": 2000,
         "display_select": 2000
     }
+    size_canvas = [440, 550];
 
     // generate initials to show to folks
     function generateRandomLetter() {
@@ -145,11 +146,12 @@
         var ctx = c.getContext('2d');
 
         ctx.lineWidth = 3;
-        ctx.font = "20px sans-serif";
         for (let i = 0; i <n_players_shown; i++){
             ctx.strokeRect(coordinates.x[i], coordinates.y[i % 2], coordinates.w, coordinates.h);
+            ctx.font = "20px sans-serif";
             ctx.fillText(initials[i], coordinates.x[i]+35, coordinates.y[i % 2]+ 50);            
-            ctx.fillText(behavior_list[i], coordinates.x[i]+20, coordinates.y[i % 2] + coordinates.h + 40); 
+            ctx.font = "36px sans-serif";
+            ctx.fillText(behavior_list[i], coordinates.x[i]+10, coordinates.y[i % 2] + coordinates.h + 40); 
         }
     }
 
@@ -158,9 +160,9 @@
         var ctx = c.getContext('2d');
 
         ctx.lineWidth = 3;
-        ctx.font = "20px sans-serif";
+        ctx.font = "36px sans-serif bold";
         for (let i = 0; i <n_players_shown; i++){
-            ctx.fillText("$" + payout_list[i], coordinates.x[i]+40, coordinates.y[i % 2] + coordinates.h + 40);            
+            ctx.fillText("$" + payout_list[i], coordinates.x[i]+50, coordinates.y[i % 2] + coordinates.h + 40);            
         }
     }
 
@@ -170,7 +172,7 @@
 
         ctx.lineWidth = 5;
         ctx.strokeStyle = "#DD0000";
-        ctx.strokeRect(coordinates.x[i]-7, coordinates.y[i % 2]- 7, coordinates.w + 13 , coordinates.h + 13)
+        ctx.strokeRect(coordinates.x[i]-7, coordinates.y[i % 2]- 7, coordinates.w + 13 , coordinates.h + 55)
     }
 
     // INSTRUCTIONS
@@ -194,7 +196,7 @@
 
     const trial_main_display = {
         type: jsPsychCanvasKeyboardResponse,
-        canvas_size: [440, 550],
+        canvas_size: size_canvas,
         stimulus: function(c){
             initials = players.splice(-n_players_shown, n_players_shown);
             
