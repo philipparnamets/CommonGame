@@ -4,8 +4,10 @@
     <title>My experiment</title>
     <script src="jspsych/jspsych.js"></script>
     <script src="jspsych/plugin-html-keyboard-response.js"></script>
+    <script src="jspsych/plugin-html-button-response.js"></script>
     <script src="jspsych/plugin-canvas-keyboard-response.js"></script>
     <script src="jspsych/plugin-canvas-slider-response.js"></script>
+    <script src="jspsych/plugin-instructions.js"></script>
     <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
   </head>
   <body></body>
@@ -24,6 +26,7 @@
     durations = {
         "ITI": 1000,
         "display_agents": 2000,
+        "display_behavior": 2000,
         "display_payout": 2000,
         "display_select": 2000
     }
@@ -175,12 +178,84 @@
         ctx.strokeRect(coordinates.x[i]-7, coordinates.y[i % 2]- 7, coordinates.w + 13 , coordinates.h + 55)
     }
 
+    // CONSENT
+
+    const provide_consent = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+        <div style='width:700px;'> <p> Dear Participant,</p>
+            <p> We are happy that you are interest in this project, which is being conducted by a team 
+                of researchers at Vrije Universiteit Amsterdam and Karolinska Institutet. We are conducting this study to 
+                examine people's perceptions of other's behavior.  </p>
+            <p> Before you can start, please read the following information carefully: </p> </div>
+            <div style='width:600px;'>
+                <ol>
+                <li style ='text-align:left;'><b>Eligibility:</b> To participate in the study, you must be between 18-65 years old.</li> <br/>
+                <li style ='text-align:left;'><b>Risks:</b>There are no anticipated risks associated with your participation in this study.</li> <br/>
+                <li style ='text-align:left;'><b>Participation:</b>Your involvement in this study is completely voluntary. You can decide to not participate or withdraw participation at any time.
+                     There is no penalty for withdrawing.</li><br/>
+                <li style ='text-align:left;'><b>Confidentiality:</b> All of your responses will be anonymous (we will not ask for, or record, your name or other information that could lead back to you). 
+                    No names or other identifying information will be associated with this study or your Prolific ID. Neither will your IP address or geolocation be saved at any time.
+                     Only the researchers involved in this study and those responsible for research oversight will have access to the information you provide. </li><br/>
+                </ol>
+			</div>
+            <div style='width:700px;'> <p> We anticipate that your participation will require approximately 12 minutes. 
+                In return for participating, we will pay you £2.00 in your Prolific account. You will receive the compensation after completing the study. </p> </div> `,
+        choices: ['Yes, I consent to participate', 'No, I do not consent to participate'],
+		data: {
+			category: "consent",
+		},
+		on_finish: function(data){
+			if(data.response==1){
+				jsPsych.endExperiment('<p>You did not consent to participate. The session will now finish. Thank you for your time!</p>');
+			}
+        }
+	};
+
+    timeline.push(provide_consent);
+
     // INSTRUCTIONS
+
+    let inst_img1 = "img/instruct_img_agent_displayed.jpg";
+    let inst_img2 = "img/instruct_img_agent_action_displayed.jpg";
+    let inst_img3 = "img/instruct_img_agent_action_reward_displayed.jpg";
+    let inst_img4 = "img/instruct_img_agent_selected.jpg";
+
     const instructions_initial = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: "<div style = 'width: 700px;'> <p> In this study, your task is to evaluate the behaviors of other individuals. </p> <p> These behaviors come from an earlier experiment in which 240 participants were randomly divided into 40 groups of 6 participants in each group. After that, each group took part in one anonymous interaction. In the beginning, each participant was given two dollars.</p> <p> In each interaction, each of the four participants had to make a choice between two options: A and B, which provided them a different economical reward. The outcome of each individual depended on their own decision and the decision of other members of the group.</p> </div>",
-        prompt: "Press spacebar to continue",
-        choices: " "
+        type: jsPsychInstructions,
+        pages: [
+        `<div style = 'width: 700px;'> <p> Welcome to this study! </p>
+            <p> Please make sure that you sit comfortably and will be able to pay your full attention to the given instructions on the next number of pages. It is important that you read each page carefully.</p></div> `,
+            `<div style = 'width:700px;'><p>On each trial, we will show you four pictures. Each of them will be presented for a few seconds and will switch automatically. 
+                These behaviors come from an earlier experiment in which 240 participants were randomly divided into 40 groups of 6 participants in each group.
+                 After that, each group took part in one anonymous interaction. 
+                 In the beginning, each participant was given two dollars. </p>
+                 <p> In each interaction, each of the four participants had to make a choice between two options:
+                     A and B, which provided them a different economical reward. 
+                     The outcome of each individual depended on their own decision and the decision of other members of the group.</p>`,
+            `<div style = 'width: 700px;'><p> We will now show you examples of the pictures you will see during each trial. First, you will be presented with the initials of 6 participants:</p> 
+                <img src=${inst_img1} alt = 'Screenshot from experiment'> </img> </div>`,
+            `<div style = 'width: 700px;'><p> 
+                Then you will see which behavior each participant has chosen between A or B: </p>
+                <img src=${inst_img2} alt = 'Screenshot from experiment'> </img></div>`,
+            `<div style = 'width: 700px;'><p> 
+                In the third picture you will observe the reward they have received for their choice: </p>
+                <img src=${inst_img3} alt = 'Screenshot from experiment'> </img></div>`,
+            `<div style = 'width: 700px;'><p> 
+                Lastly, you will be asked to evaluate your perception of the morality of the indicated participant's behavior. In this case, you would estimate the behavior of the participant with the initials LT: </p>
+                <img src=${inst_img4} alt = 'Screenshot from experiment'> </img></div>`,
+            `<div style = 'width: 700px;'><p> We are interested in how you evaluate the behaviors in these interactions, 
+                in the absence of information about the rules of the interaction. 
+                This would be similar to real-world situations where there are no clear rules, 
+                but you see what other people are doing, and what consequences their decisions have for them.</p>
+                <p> As we are interested in your perception there are no correct or incorrect answers.</p> </div>`,
+            `<div style='width:700px;'><p> Please answer the questions as quickly as possible.</p>
+                <p> You have read all the instructions now. After you click <b>Next</b> the experiment will begin. </p></div> `
+        ],
+        show_clickable_nav: true,
+        data: {
+			category: "instructions",
+		},
     };
 
     timeline.push(instructions_initial);
@@ -192,6 +267,9 @@
         stimulus: '<p style="font-size: 48px;">+</p>',
         choices: "NO_KEYS",
         trial_duration: durations.ITI,
+        data: {
+			category: "misc",
+		},
     };
 
     const trial_main_display = {
@@ -223,11 +301,28 @@
             
             shuffle(behavior_list, payout_list, 0);
             
-            drawChoices(c, initials, behavior_list);
+            drawChoices(c, initials, Array(n_trials).fill([" "]).flat());
         },
         choices: "NO_KEYS",
         propmt: "",
-        trial_duration: durations.display_agents
+        trial_duration: durations.display_agents,
+        data: {
+			category: "misc",
+		},
+    };
+
+    const trial_main_behavior = { // show behavior
+        type: jsPsychCanvasKeyboardResponse,
+        canvas_size: [440, 550],
+        stimulus: function(c){
+            drawChoices(c, initials, behavior_list);
+        },
+        choices: "NO_KEYS",
+        prompt: "",
+        trial_duration: durations.display_behavior,
+        data: {
+			category: "misc",
+		},
     };
 
     const trial_main_payout = { // show payoffs as well as behavior
@@ -239,7 +334,10 @@
         },
         choices: "NO_KEYS",
         prompt: "",
-        trial_duration: durations.display_payout
+        trial_duration: durations.display_payout,
+        data: {
+			category: "misc",
+		},
     };
 
     // define helper function
@@ -266,7 +364,10 @@
         },
         choices: "NO_KEYS",
         prompt: "",
-        trial_duration: durations.display_select
+        trial_duration: durations.display_select,
+        data: {
+			category: "misc",
+		},
     };
 
     const trial_main_choose = {
@@ -288,11 +389,15 @@
             data.behaviors_shown = behavior_list,
             data.selected_behavior = selected_behavior,
             data.selected_behavior_pos = selected_behavior_pos
-        }
+        },
+        data: {
+			category: "choice",
+		},
     };
     
     var procedure_main = {
-        timeline: [trial_main_fix, trial_main_display, trial_main_payout, trial_main_select, trial_main_choose],
+        timeline: [trial_main_fix, trial_main_display, trial_main_behavior,
+         trial_main_payout, trial_main_select, trial_main_choose],
         repetitions: n_trials
     };
     timeline.push(procedure_main);
