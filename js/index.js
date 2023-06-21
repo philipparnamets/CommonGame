@@ -220,7 +220,7 @@ const instructions_initial = {
              In the beginning, each participant was given two dollars. </p>
              <p> In each interaction, each of the four participants had to make a choice between two options:
                  A and B, which provided them a different economical reward. 
-                 The outcome of each individual depended on their own decision and the decision of other members of the group.</p>`,
+                 <span style="font-weight:bold">The outcome of each individual depended on their own decision and the decision of other members of the group.</span></p>`,
         `<div style = 'width: 700px;'><p> We will now show you examples of the pictures you will see during each trial. First, you will be presented with the initials of 6 participants:</p> 
             <img src=${inst_img1} alt = 'Screenshot from experiment'> </img> </div>`,
         `<div style = 'width: 700px;'><p> 
@@ -230,7 +230,7 @@ const instructions_initial = {
             In the third picture you will observe the reward they have received for their choice: </p>
             <img src=${inst_img3} alt = 'Screenshot from experiment'> </img></div>`,
         `<div style = 'width: 700px;'><p> 
-            Lastly, you will be asked to estimate your perception of the morality of the indicated participant's behavior. In this case, you would estimate the behavior of the participant with the initials LT: </p>
+            Lastly, <span style="font-weight:bold">you will be asked to estimate your perception of the morality of the indicated participant's behavior.</span> In this case, you would estimate the behavior of the participant with the initials LT: </p>
             <img src=${inst_img4} alt = 'Screenshot from experiment'> </img></div>`,
         `<div style = 'width: 700px;'><p> We are interested in how you evaluate the behaviors in these interactions, 
             in the absence of information about the rules of the interaction. 
