@@ -2,7 +2,7 @@
 
 const jsPsych = initJsPsych({
     on_finish: function(){
-        jsPsych.data.displayData();
+        // jsPsych.data.displayData();
     },
     show_progress_bar: true
 });
@@ -163,7 +163,7 @@ function drawChoiceRect(c, i){
 
     ctx.lineWidth = 5;
     ctx.strokeStyle = "#DD0000";
-    ctx.strokeRect(coordinates.x[i]-7, coordinates.y[i % 2]- 7, coordinates.w + 13 , coordinates.h + 55)
+    ctx.strokeRect(coordinates.x[i]-7, coordinates.y[i % 2]- 7, coordinates.w + 25 , coordinates.h + 55)
 }
 
 // CONSENT
@@ -188,7 +188,7 @@ const provide_consent = {
             </ol>
         </div>
         <div style='width:700px;'> <p> We anticipate that your participation will require approximately 12 minutes. 
-            In return for participating, we will pay you £2.00 in your Prolific account. You will receive the compensation after completing the study. </p> </div> `,
+            In return for participating, we will pay you 2.00 pounds in your Prolific account. You will receive the compensation after completing the study. </p> </div> `,
     choices: ['Yes, I consent to participate', 'No, I do not consent to participate'],
     data: {
         category: "consent",
@@ -247,7 +247,6 @@ const instructions_initial = {
 };
 
 timeline.push(instructions_initial);
-
 
 // MAIN TRIAL LOOP
 const trial_main_fix = {
@@ -393,6 +392,119 @@ timeline.push(procedure_main);
 
 // extra questions at the end
 
-//In general, do you think the more common the behavior is the more moral such behavior becomes?”, and “Do you think the more rewarding the behavior is the more moral such behavior becomes?”
+
+const extra_Q_common = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: "<div style='width:700px;'><p> In general, do you think the more common the behavior is the more moral such behavior becomes? </p></div>",
+    choices: ['No', 'Yes'],
+    data: {
+        category: "extra_common_Q"
+    }
+};
+timeline.push(extra_Q_common);
+
+const extra_Q_reward = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: "<div style='width:700px;'><p> In general, do you think the more rewarding the behavior is the more moral such behavior becomes? </p></div>",
+    choices: ['No', 'Yes'],
+    data: {
+        category: "extra_reward_Q"
+    }
+};
+timeline.push(extra_Q_reward);
+
+let likert_scale = [
+    "Strongly Disagree", 
+    "Disagree", 
+    "Neutral", 
+    "Agree", 
+    "Strongly Agree"
+  ];
+
+const moral_ID_scale = {
+    type: jsPsychSurveyLikert,
+    preamble: "<div style='width:700px;'><p> Please rate your level of agreement or disagreement with each of the statements below. </p></div>", 
+    questions: [
+        {prompt: "It would make me feel good to be a person who treats others fairly.", name: 'moralid_q1', labels: likert_scale, required: true},
+        {prompt: "Being someone who treats others fairly is an important part of who I am.", name: 'moralid_q2', labels: likert_scale, required: true},
+        {prompt: "A big part of my emotional well-being is tied up in being fair.", name: 'moralid_q3', labels: likert_scale, required: true},
+        {prompt: "I would be ashamed to be a person who is fair.", name: 'moralid_q4', labels: likert_scale, required: true},
+        {prompt: "Being fair is not really important to me.", name: 'moralid_q5', labels: likert_scale, required: true},
+        {prompt: "Being fair is an important part of my sense of self.", name: 'moralid_q6', labels: likert_scale, required: true},
+      ],
+    data: {
+        category: "extra_moralID"
+    }
+};
+timeline.push(moral_ID_scale);
+
+const conformity_scale = {
+    type: jsPsychSurveyLikert,
+    preamble: `<div style='width:700px;'><p> Please use the following scale to indicate the degree of your agreement or disagreement with each of the statements below. </p>  <p> Try to describe yourself accurately and generally (that is, the way you are actually in most situations - not the way you would hope to be). </p></div>`, 
+    questions: [
+        {prompt: "I often rely on, and act upon, the advice of others.", name: 'conf_q01', labels: likert_scale, required: true},
+        {prompt: "I would like to be the last one to change my opinion in a heated argument on a controversial topic.", name: 'conf_q02', labels: likert_scale, required: true},
+        {prompt: "Generally, I'd rather give in and go along for the sake of peace than struggle to have my way.", name: 'conf_q03', labels: likert_scale, required: true},
+        {prompt: "I tend to follow family tradition in making political decisions.", name: 'conf_q04', labels: likert_scale, required: true},
+        {prompt: "Basically, my friends are the ones who decide what we do together.", name: 'conf_q05', labels: likert_scale, required: true},
+        {prompt: "A charismatic and eloquent speaker can easily influence and change my ideas.", name: 'conf_q06', labels: likert_scale, required: true},
+        {prompt: "I am more independent than conforming in my ways.", name: 'conf_q07', labels: likert_scale, required: true},
+        {prompt: "If someone is very persuasive, I tend to change my opinion and go along with them.", name: 'conf_q08', labels: likert_scale, required: true},
+        {prompt: "I don't give in to others easily.", name: 'conf_q09', labels: likert_scale, required: true},
+        {prompt: "I tend to rely on others when I have to make an important decision quickly.", name: 'conf_q10', labels: likert_scale, required: true},
+        {prompt: "I prefer to make my own way in life rather than find a group I can follow.", name: 'conf_q11', labels: likert_scale, required: true},
+      ],
+    data: {
+        category: "extra_conformity"
+    }
+};
+timeline.push(conformity_scale);
+
+const social_influence_scale = {
+    type: jsPsychSurveyLikert,
+    preamble: `<div style='width:700px;'><p>In daily life you experience many situations in which your behaviors affect others, and others behaviors affect you.
+     Please indicate how the following  items describe the kinds of situations you <span style='font-weight:bold'> most frequently experience.</span>
+     This can be situations you experience at work, with friends, or family. </p>
+     <p>Please use the following scale to indicate the degree of your agreement or disagreement with each of the statements below. </p> 
+     <p> I<span style='font-weight:bold'> most frequently experience situations</span> in which...  </p></div>`, 
+    questions: [
+        {prompt: "How each person behaves in <span style='font-weight:bold'>that situation</span> will have consequences for future outcomes.", name: 'sis_q01', labels: likert_scale, required: true},
+        {prompt: "What each person does in that situation affects the other.", name: 'sis_q02', labels: likert_scale, required: true},
+        {prompt: "Each person can both obtain their preferred outcomes.", name: 'sis_q03', labels: likert_scale, required: true},
+        {prompt: "Future interactions are not affected by the outcomes of the situation.", name: 'sis_q04', labels: likert_scale, required: true},
+        {prompt: "Whatever each person does in the situation, each persons' actions will not affect the other's outcomes.", name: 'sis_q05', labels: likert_scale, required: true},
+        {prompt: "Each person knows what the other wants.", name: 'sis_q06', labels: likert_scale, required: true},
+        {prompt: "Each persons' preferred outcomes in the situation are conflicting.", name: 'sis_q07', labels: likert_scale, required: true},
+        {prompt: "I don't think the other(s) know what I want.", name: 'sis_q08', labels: likert_scale, required: true}
+      ],
+    data: {
+        category: "extra_sis"
+    }
+};
+timeline.push(social_influence_scale);
+
+let likert_scale_myother = [
+    "Definitely the other", 
+    "Maybe the other", 
+    "Neutral", 
+    "Maybe myself", 
+    "Definitely myself"
+  ];
+const social_influence_scale2 = {
+    type: jsPsychSurveyLikert,
+    preamble: `<div style='width:700px;'><p> Please indicate how the following  items describe the kinds of situations you <span style='font-weight:bold'> most frequently experience.</span></p>
+    <p> Please indicate how the statement describes yourself and "the other(s)" in the kinds of situations you most frequently experience.  </p>
+     <p> In each item "the other" refers to the person(s) in the situations you experience. </p> 
+     <p> In <span style='font-weight:bold'> your most frequently experience situations... </span></p></div>`, 
+    questions: [
+        {prompt: "Who do you feel has more power to determine their own outcomes in these situations?", name: 'sis_q09', labels: likert_scale_myother, required: true},
+        {prompt: "Who has the least amount of influence on the outcomes of these situations?", name: 'sis_q10', labels: likert_scale_myother, required: true}
+      ],
+    data: {
+        category: "extra_sis"
+    }
+};
+timeline.push(social_influence_scale2);
+
 
 jsPsych.run(timeline);
