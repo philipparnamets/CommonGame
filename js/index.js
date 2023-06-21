@@ -1,3 +1,11 @@
+<script src="jspsych/jspsych.js"></script>
+<script src="jspsych/plugin-html-keyboard-response.js"></script>
+<script src="jspsych/plugin-html-button-response.js"></script>
+<script src="jspsych/plugin-canvas-keyboard-response.js"></script>
+<script src="jspsych/plugin-canvas-slider-response.js"></script>
+<script src="jspsych/plugin-instructions.js"></script>
+<link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
+
 const jsPsych = initJsPsych({
     on_finish: function(){
         jsPsych.data.displayData();
