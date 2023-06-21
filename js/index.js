@@ -389,4 +389,8 @@ var procedure_main = {
 };
 timeline.push(procedure_main);
 
+// extra questions at the end
+
+//In general, do you think the more common the behavior is the more moral such behavior becomes?”, and “Do you think the more rewarding the behavior is the more moral such behavior becomes?”
+
 jsPsych.run(timeline);
