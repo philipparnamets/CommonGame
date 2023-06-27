@@ -8,6 +8,17 @@ const jsPsych = initJsPsych({
 });
 var timeline = [];
 
+// capture from Prolific
+const subject_id = jsPsych.data.getURLVariable('PROLIFIC_PID');
+const study_id = jsPsych.data.getURLVariable('STUDY_ID');
+const session_id = jsPsych.data.getURLVariable('SESSION_ID');
+
+jsPsych.data.addProperties({
+    subject_id: subject_id,
+    study_id: study_id,
+    session_id: session_id
+});
+
 // control parameters
 n_trials = 12; 
 n_players_shown = 6;
@@ -195,7 +206,8 @@ const provide_consent = {
     },
     on_finish: function(data){
         if(data.response==1){
-            jsPsych.endExperiment('<p>You did not consent to participate. The session will now finish. Thank you for your time!</p>');
+            jsPsych.endExperiment(`<p>You did not consent to participate. The session will now finish. Thank you for your time!</p>
+            <p><a href="https://app.prolific.co/submissions/complete?cc=CYVR83CY">Click here to return to Prolific and return the study</a>.</p>`);
         }
     }
 };
@@ -505,6 +517,14 @@ const social_influence_scale2 = {
     }
 };
 timeline.push(social_influence_scale2);
+
+
+var final_trial = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `<p>You've finished the last task. Thanks for participating!</p>
+      <p><a href="https://app.prolific.co/submissions/complete?cc=CLTJL3RC">Click here to return to Prolific and complete the study</a>.</p>`,
+    choices: "NO_KEYS"
+  }
 
 
 jsPsych.run(timeline);
