@@ -198,8 +198,8 @@ const provide_consent = {
                  Only the researchers involved in this study and those responsible for research oversight will have access to the information you provide. </li><br/>
             </ol>
         </div>
-        <div style='width:700px;'> <p> We anticipate that your participation will require approximately 12 minutes. 
-            In return for participating, we will pay you 2.00 pounds in your Prolific account. You will receive the compensation after completing the study. </p> </div> `,
+        <div style='width:700px;'> <p> We anticipate that your participation will require approximately 15 minutes. 
+            In return for participating, we will pay you 2.25 pounds in your Prolific account. You will receive the compensation after completing the study. </p> </div> `,
     choices: ['Yes, I consent to participate', 'No, I do not consent to participate'],
     data: {
         category: "consent",
