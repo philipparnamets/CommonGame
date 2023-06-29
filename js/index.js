@@ -152,8 +152,8 @@ function drawChoices(c, initials, behavior_list){
         ctx.strokeRect(coordinates.x[i], coordinates.y[i % 2], coordinates.w, coordinates.h);
         ctx.font = "20px sans-serif";
         ctx.fillText(initials[i], coordinates.x[i]+35, coordinates.y[i % 2]+ 50);            
-        ctx.font = "36px sans-serif";
-        ctx.fillText(behavior_list[i], coordinates.x[i]+10, coordinates.y[i % 2] + coordinates.h + 40); 
+        ctx.font = "48px sans-serif";
+        ctx.fillText(behavior_list[i], coordinates.x[i], coordinates.y[i % 2] + coordinates.h + 40); 
     }
 }
 
@@ -162,9 +162,9 @@ function drawPayout(c, payout_list){
     var ctx = c.getContext('2d');
 
     ctx.lineWidth = 3;
-    ctx.font = "36px sans-serif bold";
+    ctx.font = "48px sans-serif bold";
     for (let i = 0; i <n_players_shown; i++){
-        ctx.fillText("$" + payout_list[i], coordinates.x[i]+50, coordinates.y[i % 2] + coordinates.h + 40);            
+        ctx.fillText("$" + payout_list[i], coordinates.x[i]+60, coordinates.y[i % 2] + coordinates.h + 40);            
     }
 }
 
@@ -174,7 +174,7 @@ function drawChoiceRect(c, i){
 
     ctx.lineWidth = 5;
     ctx.strokeStyle = "#DD0000";
-    ctx.strokeRect(coordinates.x[i]-7, coordinates.y[i % 2]- 7, coordinates.w + 25 , coordinates.h + 55)
+    ctx.strokeRect(coordinates.x[i]-7, coordinates.y[i % 2]- 7, coordinates.w + 35 , coordinates.h + 65)
 }
 
 // CONSENT
@@ -198,8 +198,8 @@ const provide_consent = {
                  Only the researchers involved in this study and those responsible for research oversight will have access to the information you provide. </li><br/>
             </ol>
         </div>
-        <div style='width:700px;'> <p> We anticipate that your participation will require approximately 15 minutes. 
-            In return for participating, we will pay you 2.25 pounds in your Prolific account. You will receive the compensation after completing the study. </p> </div> `,
+        <div style='width:700px;'> <p> We anticipate that your participation will require approximately 15 minutes.  You will receive the compensation indicated on Prolific after completing the study. </p>  
+        <p> Responsible researcher is Bj&ouml;rn Lindstr&ouml;m, and can be reached on bjorn.lindstrom@ki.se . </p> </div> `,
     choices: ['Yes, I consent to participate', 'No, I do not consent to participate'],
     data: {
         category: "consent",
@@ -216,7 +216,7 @@ timeline.push(provide_consent);
 
 // INSTRUCTIONS
 
-let inst_img1 = "img/instruct_img_agent_displayed.jpg";
+// let inst_img1 = "img/instruct_img_agent_displayed.jpg";
 let inst_img2 = "img/instruct_img_agent_action_displayed.jpg";
 let inst_img3 = "img/instruct_img_agent_action_reward_displayed.jpg";
 let inst_img4 = "img/instruct_img_agent_selected.jpg";
@@ -233,13 +233,13 @@ const instructions_initial = {
              <p> In each interaction, each of the four participants had to make a choice between two options:
                  A and B, which provided them a different economical reward. 
                  <span style="font-weight:bold">The outcome of each individual depended on their own decision and the decision of other members of the group.</span></p>`,
-        `<div style = 'width: 700px;'><p> We will now show you examples of the pictures you will see during each trial. First, you will be presented with the initials of 6 participants:</p> 
-            <img src=${inst_img1} alt = 'Screenshot from experiment'> </img> </div>`,
+        //`<div style = 'width: 700px;'><p> We will now show you examples of the pictures you will see during each trial. First, you will be presented with the initials of 6 participants:</p> 
+         //   <img src=${inst_img1} alt = 'Screenshot from experiment'> </img> </div>`,
         `<div style = 'width: 700px;'><p> 
-            Then you will see which behavior each participant has chosen between A or B: </p>
+            First, you will be presented with the initials of 6 participants together with which behavior each participant has chosen between A or B: </p>
             <img src=${inst_img2} alt = 'Screenshot from experiment'> </img></div>`,
         `<div style = 'width: 700px;'><p> 
-            In the third picture you will observe the reward they have received for their choice: </p>
+            In the second picture you will observe the reward they have received for their choice: </p>
             <img src=${inst_img3} alt = 'Screenshot from experiment'> </img></div>`,
         `<div style = 'width: 700px;'><p> 
             Lastly, <span style="font-weight:bold">you will be asked to estimate your perception of the morality of the indicated participant's behavior.</span> In this case, you would estimate the behavior of the participant with the initials LT: </p>
@@ -271,7 +271,7 @@ const trial_main_fix = {
     },
 };
 
-const trial_main_display = {
+/* const trial_main_display = {
     type: jsPsychCanvasKeyboardResponse,
     canvas_size: size_canvas,
     stimulus: function(c){
@@ -308,12 +308,38 @@ const trial_main_display = {
     data: {
         category: "misc",
     },
-};
+}; */
 
 const trial_main_behavior = { // show behavior
     type: jsPsychCanvasKeyboardResponse,
     canvas_size: [440, 550],
     stimulus: function(c){
+
+        initials = players.splice(-n_players_shown, n_players_shown);
+        
+        // generate behaviors to view
+        selected_behavior = trial_behavior.pop();
+        n_selected = trial_n_behavior.pop();
+        selected_payout = trial_payout.pop();
+        this_payout = generatePayout(selected_payout);
+
+        if (selected_behavior == "A"){   
+            //behavior_list = ["A" * ]
+            behavior_list = Array(n_selected).fill(["A"]).flat().concat(Array(n_players_shown - n_selected).fill(["B"]).flat()); 
+        } else {
+            behavior_list = Array(n_selected).fill(["B"]).flat().concat(Array(n_players_shown - n_selected).fill(["A"]).flat()); 
+        }
+
+        if (selected_payout=="large"){
+            payout_list = Array(n_selected).fill([ this_payout[0] ]).flat().concat(Array(n_players_shown - n_selected).fill([ this_payout[1] ]).flat()); 
+        } else {
+            // reverse payouts to above
+            // if equal any of the two works..
+            payout_list = Array(n_selected).fill([ this_payout[1] ]).flat().concat(Array(n_players_shown - n_selected).fill([ this_payout[0] ]).flat()); 
+        }
+        
+        shuffle(behavior_list, payout_list, 0);
+
         drawChoices(c, initials, behavior_list);
     },
     choices: "NO_KEYS",
@@ -396,7 +422,7 @@ const trial_main_choose = {
 };
 
 var procedure_main = {
-    timeline: [trial_main_fix, trial_main_display, trial_main_behavior,
+    timeline: [trial_main_fix, trial_main_behavior,
      trial_main_payout, trial_main_select, trial_main_choose],
     repetitions: n_trials
 };
@@ -407,7 +433,7 @@ timeline.push(procedure_main);
 
 const extra_Q_common = {
     type: jsPsychHtmlButtonResponse,
-    stimulus: "<div style='width:700px;'><p> In general, do you think the more common the behavior is the more moral such behavior becomes? </p></div>",
+    stimulus: "<div style='width:700px;'><p> In general, do you think the more <span style='font-weight:bold'> common </span> the behavior is the more moral such behavior becomes? </p></div>",
     choices: ['No', 'Yes'],
     data: {
         category: "extra_common_Q"
@@ -417,7 +443,7 @@ timeline.push(extra_Q_common);
 
 const extra_Q_reward = {
     type: jsPsychHtmlButtonResponse,
-    stimulus: "<div style='width:700px;'><p> In general, do you think the more rewarding the behavior is the more moral such behavior becomes? </p></div>",
+    stimulus: "<div style='width:700px;'><p> In general, do you think the more <span style='font-weight:bold'> rewarding </span> the behavior is the more moral such behavior becomes? </p></div>",
     choices: ['No', 'Yes'],
     data: {
         category: "extra_reward_Q"
