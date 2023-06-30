@@ -152,7 +152,7 @@ function drawChoices(c, initials, behavior_list){
         ctx.strokeRect(coordinates.x[i], coordinates.y[i % 2], coordinates.w, coordinates.h);
         ctx.font = "20px sans-serif";
         ctx.fillText(initials[i], coordinates.x[i]+35, coordinates.y[i % 2]+ 50);            
-        ctx.font = "48px sans-serif";
+        ctx.font = "44px sans-serif";
         ctx.fillText(behavior_list[i], coordinates.x[i], coordinates.y[i % 2] + coordinates.h + 40); 
     }
 }
@@ -162,9 +162,9 @@ function drawPayout(c, payout_list){
     var ctx = c.getContext('2d');
 
     ctx.lineWidth = 3;
-    ctx.font = "48px sans-serif bold";
+    ctx.font = "44px sans-serif bold";
     for (let i = 0; i <n_players_shown; i++){
-        ctx.fillText("$" + payout_list[i], coordinates.x[i]+60, coordinates.y[i % 2] + coordinates.h + 40);            
+        ctx.fillText("$" + payout_list[i], coordinates.x[i]+48, coordinates.y[i % 2] + coordinates.h + 40);            
     }
 }
 
@@ -183,7 +183,7 @@ const provide_consent = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
     <div style='width:700px;'> <p> Dear Participant,</p>
-        <p> We are happy that you are interest in this project, which is being conducted by a team 
+        <p> We are happy that you are interested in this project, which is being conducted by a team 
             of researchers at Vrije Universiteit Amsterdam and Karolinska Institutet. We are conducting this study to 
             examine people's perceptions of other's behavior.  </p>
         <p> Before you can start, please read the following information carefully: </p> </div>
@@ -195,10 +195,10 @@ const provide_consent = {
                  There is no penalty for withdrawing.</li><br/>
             <li style ='text-align:left;'> <span style="font-weight:bold"> Confidentiality: </span> All of your responses will be anonymous (we will not ask for, or record, your name or other information that could lead back to you). 
                 No names or other identifying information will be associated with this study or your Prolific ID. Neither will your IP address or geolocation be saved at any time.
-                 Only the researchers involved in this study and those responsible for research oversight will have access to the information you provide. </li><br/>
+             </li><br/>
             </ol>
         </div>
-        <div style='width:700px;'> <p> We anticipate that your participation will require approximately 15 minutes.  You will receive the compensation indicated on Prolific after completing the study. </p>  
+        <div style='width:700px;'> <p> We anticipate that your participation will require approximately 18 minutes.  You will receive the compensation indicated on Prolific after completing the study. </p>  
         <p> Responsible researcher is Bj&ouml;rn Lindstr&ouml;m, and can be reached on bjorn.lindstrom@ki.se . </p> </div> `,
     choices: ['Yes, I consent to participate', 'No, I do not consent to participate'],
     data: {
@@ -227,11 +227,11 @@ const instructions_initial = {
     `<div style = 'width: 700px;'> <p> Welcome to this study! </p>
         <p> Please make sure that you sit comfortably and will be able to pay your full attention to the given instructions on the next number of pages. It is important that you read each page carefully.</p></div> `,
         `<div style = 'width:700px;'><p>On each trial, we will show you four pictures. Each of them will be presented for a few seconds and will switch automatically. 
-            These behaviors come from an earlier experiment in which 240 participants were randomly divided into 40 groups of 6 participants in each group.
+            These behaviors come from an earlier experiment in which 288 participants were randomly divided into 40 groups of 6 participants in each group.
              After that, each group took part in one anonymous interaction. 
              In the beginning, each participant was given two dollars. </p>
              <p> In each interaction, each of the four participants had to make a choice between two options:
-                 A and B, which provided them a different economical reward. 
+                 A and B, which provided them with a different economical reward. 
                  <span style="font-weight:bold">The outcome of each individual depended on their own decision and the decision of other members of the group.</span></p>`,
         //`<div style = 'width: 700px;'><p> We will now show you examples of the pictures you will see during each trial. First, you will be presented with the initials of 6 participants:</p> 
          //   <img src=${inst_img1} alt = 'Screenshot from experiment'> </img> </div>`,
