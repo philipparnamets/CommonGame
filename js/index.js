@@ -20,7 +20,7 @@ jsPsych.data.addProperties({
 });
 
 // control parameters
-n_trials = 12; 
+n_trials = 48; 
 n_players_shown = 6;
 durations = {
     "ITI": 1000,
