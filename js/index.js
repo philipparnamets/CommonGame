@@ -24,10 +24,10 @@ n_trials = 12;
 n_players_shown = 6;
 durations = {
     "ITI": 1000,
-    "display_agents": 2000,
-    "display_behavior": 2000,
-    "display_payout": 2000,
-    "display_select": 2000
+    "display_agents": 1500,
+    "display_behavior": 1500,
+    "display_payout": 1500,
+    "display_select": 1500
 }
 size_canvas = [440, 550];
 
