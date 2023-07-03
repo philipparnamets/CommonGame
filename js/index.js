@@ -2,7 +2,7 @@
 
 const jsPsych = initJsPsych({
     on_finish: function(){
-        // jsPsych.data.displayData();
+        window.location = "https://app.prolific.co/submissions/complete?cc=CLTJL3RC"
     },
     show_progress_bar: true
 });
@@ -20,7 +20,7 @@ jsPsych.data.addProperties({
 });
 
 // control parameters
-n_trials = 48; 
+n_trials = 12; 
 n_players_shown = 6;
 durations = {
     "ITI": 1000,
@@ -546,15 +546,6 @@ const social_influence_scale2 = {
     }
 };
 timeline.push(social_influence_scale2);
-
-
-var final_trial = {
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: `<p>You've finished the last task. Thanks for participating!</p>
-      <p><a href="https://app.prolific.co/submissions/complete?cc=CLTJL3RC">Click here to return to Prolific and complete the study</a>.</p>`,
-    choices: "NO_KEYS"
-  };
-timeline.push(final_trial);
 
 
 jsPsych.run(timeline);
