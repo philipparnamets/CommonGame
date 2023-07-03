@@ -414,7 +414,10 @@ const trial_main_choose = {
         data.behaviors_shown = behavior_list,
         data.selected_behavior = selected_behavior,
         data.selected_behavior_pos = selected_behavior_pos,
-        data.payout_list = payout_list
+        data.payout_list = payout_list,
+        data.payout_condition = selected_payout,
+        data.payout_large = this_payout[0],
+        data.payout_small = this_payout[1]
     },
     data: {
         category: "choice",
@@ -550,7 +553,8 @@ var final_trial = {
     stimulus: `<p>You've finished the last task. Thanks for participating!</p>
       <p><a href="https://app.prolific.co/submissions/complete?cc=CLTJL3RC">Click here to return to Prolific and complete the study</a>.</p>`,
     choices: "NO_KEYS"
-  }
+  };
+timeline.push(final_trial);
 
 
 jsPsych.run(timeline);
